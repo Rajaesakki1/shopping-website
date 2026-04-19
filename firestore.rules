@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 0.3 Primitives
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Validation Helpers
+    function isValidProduct(data) {
+      return data.name is string && data.name.size() <= 200 &&
+             data.price is number && data.price >= 0 &&
+             data.category is string &&
+             data.images is list;
+    }
+
+    function isValidUser(data) {
+      return data.email is string &&
+             (data.displayName == null || data.displayName is string);
+    }
+
+    function isValidOrder(data) {
+      return data.userId == request.auth.uid &&
+             data.items is list &&
+             data.total is number &&
+             data.status in ['pending', 'processing', 'shipped', 'delivered'];
+    }
+
+    // 1. Products: Public read, Admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidProduct(incoming());
+    }
+
+    // 2. Users: Owner read/write
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().isAdmin == false;
+      allow update: if isOwner(userId) && isValidUser(incoming()) && incoming().isAdmin == existing().isAdmin;
+    }
+
+    // 3. Orders: Owner read/create
+    match /orders/{orderId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidOrder(incoming()) && incoming().status == 'pending';
+    }
+
+    // Admin configuration (managed via backend/console)
+    match /admins/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+    }
+  }
+}

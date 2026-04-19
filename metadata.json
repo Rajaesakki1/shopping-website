@@ -1,0 +1,9 @@
+{
+  "name": "Vastra Marketplace",
+  "description": "Authentic Tamil Nadu Marketplace for Premium Sarees and Traditional Vesti. Explore Silk, Cotton, and Bridal collections with a modern Vanakkam experience.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "product": {
+      "title": "Product",
+      "description": "An item available in the marketplace",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Display name of the product" },
+        "price": { "type": "number", "description": "Selling price" },
+        "originalPrice": { "type": "number", "description": "Original price before discount" },
+        "images": { "type": "array", "description": "Array of 4-5 image URLs" },
+        "category": { "type": "string", "description": "Product category e.g. Silk Sarees" },
+        "description": { "type": "string", "description": "Detailed description" },
+        "fabric": { "type": "string", "description": "Type of fabric" },
+        "occasion": { "type": "string", "description": "Recommended occasion" },
+        "rating": { "type": "number", "description": "Average rating" },
+        "reviewCount": { "type": "number", "description": "Total number of reviews" },
+        "sizes": { "type": "array", "description": "Available sizes (mostly for boys wear)" }
+      },
+      "required": ["name", "price", "images", "category"]
+    },
+    "review": {
+      "title": "Review",
+      "description": "Customer feedback for a product",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string" },
+        "images": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "approved": { "type": "boolean", "description": "Admin approval status" }
+      },
+      "required": ["productId", "userId", "rating", "comment"]
+    },
+    "order": {
+      "title": "Order",
+      "description": "Customer purchase record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "shipped", "delivered"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "product",
+      "description": "Products collection"
+    },
+    "/products/{productId}/reviews/{reviewId}": {
+      "schema": "review",
+      "description": "Reviews for a specific product"
+    },
+    "/orders/{orderId}": {
+      "schema": "order",
+      "description": "Customer orders"
+    }
+  }
+}

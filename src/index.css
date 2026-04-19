@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=JetBrains+Mono:wght@400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Traditional Indian Palette */
+  --color-maroon: #800000;
+  --color-gold: #D4AF37;
+  --color-cream: #F5F5DC;
+  --color-dark-green: #013220;
+  --color-ink: #2d2d2d;
+  --color-silk-bg: #fdfaf5;
+}
+
+@layer base {
+  body {
+    @apply bg-silk-bg text-ink selection:bg-gold/30 selection:text-maroon;
+  }
+}
+
+/* Silk Texture Overlay */
+.silk-overlay {
+  background-image: url("https://www.transparenttextures.com/patterns/silk.png");
+}
+
+/* Elegant Text */
+.heading-elegant {
+  font-family: var(--font-serif);
+  @apply tracking-tight font-medium;
+}
+
+/* Temple Border Decoration */
+.temple-border {
+  position: relative;
+  background-image: radial-gradient(circle at 10px 10px, var(--color-gold) 2px, transparent 0);
+  background-size: 20px 20px;
+}
+
+.silk-texture {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.05) 100%);
+  box-shadow: inset 0 0 100px rgba(255,255,255,0.05);
+}
+
+.serif {
+  font-family: var(--font-serif);
+}
+
+.luxury-underline {
+  @apply relative cursor-pointer;
+}
+
+.luxury-underline::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-[1px] bg-ink transition-all duration-300;
+}
+
+.luxury-underline:hover::after {
+  @apply w-full;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
